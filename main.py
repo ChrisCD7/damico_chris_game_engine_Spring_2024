@@ -9,6 +9,17 @@ from sprites import *
 from os import path
 from time import *
 
+
+'''
+Goals:
+
+Quests
+Weapons
+Shop
+Scrolling Camera
+Music
+'''
+
 # player = Player
 speed = PLAYER_SPEED
 
@@ -34,20 +45,31 @@ class Game:
 
     # Modify the 'new' method in the Game class to create Mob instances
     def new(self):
-    # init all variables, setup groups, instantiate classes
+        # init all variables, setup groups, instantiate classes
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
+        self.power_ups = pg.sprite.Group()
+        self.foods = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
         self.player = pg.sprite.Group()
-        self.mob = pg.sprite.Group()
-
+        # self.player = Player(self, 10, 10)
+        # for x in range(10, 20):
+        #     Wall(self, x, 5)
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
+                # print(col)
+                # print(tiles)
+                # uses a string character to denote an instance of a game object...
                 if tile == '1':
                     Wall(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
+                if tile == 'U':
+                    PowerUp(self, col, row)
+                if tile == 'F':
+                    Food(self, col, row)
                 if tile == 'M':
-                    Mob(self, col, row, speed)
+                    Mob(self, col, row)
 
 
 # defined run method in game engine
@@ -74,6 +96,15 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (x,0), (x, HEIGHT))
         for y in range(0, WIDTH, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0,y), (WIDTH, y))
+
+    def draw_text(self, surface, text, size, color, x, y):
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = (x*TILESIZE,y*TILESIZE)
+        surface.blit(text_surface, text_rect)
+
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid()
