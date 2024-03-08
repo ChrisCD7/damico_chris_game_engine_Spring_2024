@@ -8,6 +8,7 @@ from settings import *
 from sprites import *
 from os import path
 from time import *
+from PIL import *
 
 
 '''
@@ -16,7 +17,7 @@ Goals:
 Quests
 Weapons
 Shop
-Scrolling Camera
+Scrolling Map
 Music
 '''
 
@@ -52,6 +53,7 @@ class Game:
         self.foods = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.player = pg.sprite.Group()
+        self.weapons = pg.sprite.Group()
         # self.player = Player(self, 10, 10)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -70,6 +72,8 @@ class Game:
                     Food(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+                if tile == 'W':
+                    Weapon(self, col, row)
 
 
 # defined run method in game engine

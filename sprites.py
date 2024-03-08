@@ -5,7 +5,7 @@ import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
 import random
-
+from PIL import Image
 
 # write a player class
 class Player(Sprite):
@@ -21,6 +21,7 @@ class Player(Sprite):
         self.y = y * TILESIZE
         self.hitpoints = 50
         self.speed = 300
+        self.attack = 30
     # def move(self, dx=0, dy=0):
     #     self.x += dx
     #     self.y += dy
@@ -52,6 +53,10 @@ class Player(Sprite):
             print("I collided with mob")
             self.image.fill(GREEN)
             self.hitpoints -= 10
+        if hits and desc == 'weapon':
+            print('I collided with weapon')
+            self.image.fill(GREEN)
+            self.attack += 20
 
 
     def collide_with_group(self, group, kill):
@@ -99,6 +104,7 @@ class Player(Sprite):
         self.collide_with_obj(self.game.power_ups, True, "powerup")
         self.collide_with_obj(self.game.foods, True, "food")
         self.collide_with_obj(self.game.mobs, True, "mob")
+        self.collide_with_obj(self.game.weapons, True, "weapon")
         self.rect.width = self.rect.width
         self.rect.height = self.rect.height
         
@@ -182,3 +188,20 @@ class Food(Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+
+class Weapon(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.weapons
+        self.image = Image
+        self.image.load('sword.jpg')
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        # self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        
