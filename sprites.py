@@ -4,7 +4,7 @@
 import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
-
+import random
 
 
 # write a player class
@@ -130,6 +130,7 @@ class Mob(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         self.speed = 1
+        self.hitpoints = 20
 
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -146,7 +147,13 @@ class Mob(Sprite):
         self.rect.x += TILESIZE * self.speed
         if self.collide_with_walls('x'):
             self.speed *= -1
-    
+
+    def respawn(self):
+        self.hitpoints = 20
+        self.x = random.randint(0, self.game.map_width - 1)
+        self.y = random.randint(0, self.game.map_height - 1)
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
         
 class PowerUp(Sprite):
     def __init__(self, game, x, y):
