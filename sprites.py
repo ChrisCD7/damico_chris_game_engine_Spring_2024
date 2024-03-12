@@ -195,8 +195,7 @@ class Weapon(Sprite):
         self.groups = game.all_sprites, game.weapons
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(LIGHTGREY)
+        self.image = pg.image.load('sword.jpg').convert()
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

@@ -7,6 +7,7 @@ from random import *
 from settings import *
 from sprites import *
 from os import path
+import os
 from time import *
 from PIL import *
 
@@ -15,7 +16,7 @@ from PIL import *
 Goals:
 
 Quests
-Weapons
+Weapons (add image to sprite)
 Shop
 Scrolling Map
 Music
@@ -28,11 +29,18 @@ class Game:
     # initialize game window
     def __init__(self):
         pg.init()
+        pg.mixer.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
+
+    def music_player():
+        bg_music = os.path.join("bg_music.mp3")
+        pg.mixer.music.load(bg_music)
+        pg.mixer.music.play(-1)  # -1 means loop indefinitely
+
     # load game data
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -91,6 +99,9 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
+        # Stop the music when the loop exits  
+        pg.mixer.music.stop()
+    
 
     def update(self):
         self.all_sprites.update()
