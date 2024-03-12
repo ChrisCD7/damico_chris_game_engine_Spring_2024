@@ -20,6 +20,7 @@ Weapons (add image to sprite)
 Shop
 Scrolling Map
 Music
+Settings Menu
 '''
 
 # player = Player
@@ -96,16 +97,17 @@ class Game:
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
+            # music
+            self.music_player()
+            #image
+            # self.image_path()
             # this is input
             self.events()
             # this is processing
             self.update()
             # this output
             self.draw()
-            # music
-            self.music_player()
-            #image
-            # self.image_path()
+            
 
 
     def quit(self):
