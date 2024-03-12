@@ -36,8 +36,15 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.load_data()
 
-    def music_player():
-        bg_music = os.path.join("bg_music.mp3")
+
+    # def image_path(self):
+    #     # Load image from folder
+    #     image_folder = os.path.join(os.path.dirname(__file__), 'images')
+    #     image_path = os.path.join(image_folder, 'sword.jpg')
+    #     image = pg.image.load(image_path)
+
+    def music_player(self):
+        bg_music = os.path.join("bg_music2.mp3")
         pg.mixer.music.load(bg_music)
         pg.mixer.music.play(-1)  # -1 means loop indefinitely
 
@@ -95,6 +102,11 @@ class Game:
             self.update()
             # this output
             self.draw()
+            # music
+            self.music_player()
+            #image
+            # self.image_path()
+
 
     def quit(self):
         pg.quit()
