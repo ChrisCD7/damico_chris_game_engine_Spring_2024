@@ -193,12 +193,10 @@ class Food(Sprite):
 class Weapon(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.weapons
-        self.image = Image
-        self.image.load('sword.jpg')
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        # self.image.fill(BLUE)
+        self.image.fill(LIGHTGREY)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
