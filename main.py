@@ -15,11 +15,10 @@ from PIL import *
 '''
 Goals:
 
-Quests
-Weapons (add image to sprite)
+Weapons (add image to sprite) ✅
 Shop
 Scrolling Map
-Music
+Music ✅
 Settings Menu
 '''
 
@@ -38,11 +37,11 @@ class Game:
         self.load_data()
 
 
-    # def image_path(self):
-    #     # Load image from folder
-    #     image_folder = os.path.join(os.path.dirname(__file__), 'images')
-    #     image_path = os.path.join(image_folder, 'sword.jpg')
-    #     image = pg.image.load(image_path)
+    def image_path(self):
+        # Load image from folder
+        image_folder = os.path.join(os.path.dirname(__file__), 'images')
+        image_path = os.path.join(image_folder, 'sword.jpg')
+        image = pg.image.load(image_path)
 
     def music_player(self):
         bg_music = os.path.join("bg_music2.mp3")
@@ -94,11 +93,11 @@ class Game:
 
 # defined run method in game engine
     def run(self):
+        # music
+        self.music_player()
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
-            # music
-            self.music_player()
             #image
             # self.image_path()
             # this is input
