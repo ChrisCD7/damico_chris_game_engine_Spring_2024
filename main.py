@@ -34,19 +34,15 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
+        self.images = {}
+        self.audio = {}
         self.load_data()
 
 
-    def image_path(self):
-        # Load image from folder
-        image_folder = os.path.join(os.path.dirname(__file__), 'images')
-        image_path = os.path.join(image_folder, 'sword.jpg')
-        image = pg.image.load(image_path)
-
     def music_player(self):
-        bg_music = os.path.join("bg_music2.mp3")
-        pg.mixer.music.load(bg_music)
+        pg.mixer.music.load(path.join(self.snd_folder, 'bg_music2.mp3'))
         pg.mixer.music.play(-1)  # -1 means loop indefinitely
+        
 
     # load game data
     def load_data(self):
@@ -57,6 +53,13 @@ class Game:
                 self.map_data.append(line)
                 print(self.map_data)
                 print(enumerate(self.map_data))
+
+        self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, 'image_files')
+        self.snd_folder = path.join(self.game_folder, 'audio_assets')
+
+        self.player_img = pg.image.load(path.join(self.img_folder, 'sword.jpg')).convert_alpha()
+
 
 
     # Modify the 'new' method in the Game class to create Mob instances
