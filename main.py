@@ -39,9 +39,9 @@ class Game:
         self.load_data()
 
 
-    def music_player(self):
-        pg.mixer.music.load(path.join(self.snd_folder, 'bg_music2.mp3'))
-        pg.mixer.music.play(-1)  # -1 means loop indefinitely
+    # def music_player(self):
+    #     pg.mixer.music.load(path.join(self.snd_folder, 'bg_music2.mp3'))
+    #     pg.mixer.music.play(-1)  # -1 means loop indefinitely
         
 
     # load game data
@@ -65,6 +65,7 @@ class Game:
     # Modify the 'new' method in the Game class to create Mob instances
     def new(self):
         # init all variables, setup groups, instantiate classes
+        pg.mixer.music.load(path.join(self.snd_folder, 'bg_music2.mp3'))
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
@@ -97,7 +98,8 @@ class Game:
 # defined run method in game engine
     def run(self):
         # music
-        self.music_player()
+        # self.music_player()
+        pg.mixer.music.play(loops=-1)
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
