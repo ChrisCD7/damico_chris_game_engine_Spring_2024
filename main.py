@@ -1,5 +1,11 @@
 # File Created by Chris D'Amico
 
+'''
+Sources
+- https://github.com/ccozort/cozort_chris_game_engine_Spring_2024/
+
+'''
+
 # Import Libraries and Modular Files
 import pygame as pg
 import sys
@@ -53,7 +59,7 @@ class Game:
                 self.map_data.append(line)
                 print(self.map_data)
                 print(enumerate(self.map_data))
-
+        # access files from folders
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'image_files')
         self.snd_folder = path.join(self.game_folder, 'audio_assets')

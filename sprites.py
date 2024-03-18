@@ -1,5 +1,10 @@
 # File created by Chris D'Amico
 
+'''
+Sources
+- https://github.com/ccozort/cozort_chris_game_engine_Spring_2024/
+
+'''
 
 import pygame as pg
 from pygame.sprite import Sprite
@@ -189,13 +194,37 @@ class Food(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
-
+# glorified powerup :)
 class Weapon(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.weapons
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.transform.scale(game.player_img, (64, 64))
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+    
+    # from ccozort sword class
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            if str(hits[0].__class__.__name__) == "Mob":
+                print("you hurt a mob!")
+                hits[0].hitpoints -= 1
+            if str(hits[0].__class__.__name__) == "Mob2":
+                print("you hurt a mob!")
+                hits[0].hitpoints -= 1
+# ccozort's coin class
+class Coin(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
