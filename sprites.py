@@ -9,7 +9,7 @@ Sources
 import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
-import random
+from random import *
 from PIL import Image
 
 # write a player class
@@ -138,26 +138,47 @@ class Mob(Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
+        self.vx, self.vy = 100, 100
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-        self.speed = 1
-        self.hitpoints = 20
+        self.speed = randint(1,3)
+        self.hitpoints = 4
 
     def collide_with_walls(self, dir):
         if dir == 'x':
+            # print('colliding on the x')
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                if self.x > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.x < 0:
-                    self.x = hits[0].rect.right
-                self.x = 0
+                self.vx *= -1
                 self.rect.x = self.x
+        if dir == 'y':
+            # print('colliding on the y')
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                self.vy *= -1
+                self.rect.y = self.y
 
     def update(self):
-        self.rect.x += TILESIZE * self.speed
-        if self.collide_with_walls('x'):
-            self.speed *= -1
+        if self.hitpoints < 1:
+            self.kill()
+        # self.image.blit(self.game.screen, self.pic)
+        # pass
+        # # self.rect.x += 1
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        
+        if self.rect.x < self.game.player.rect.x:
+            self.vx = 100
+        if self.rect.x > self.game.player.rect.x:
+            self.vx = -100    
+        if self.rect.y < self.game.player.rect.y:
+            self.vy = 100
+        if self.rect.y > self.game.player.rect.y:
+            self.vy = -100
+        self.rect.x = self.x
+        # self.collide_with_walls('x')
+        self.rect.y = self.y
+        # self.collide_with_walls('y')
 
     def respawn(self):
         self.hitpoints = 20
