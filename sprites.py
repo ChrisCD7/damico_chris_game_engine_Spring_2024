@@ -195,7 +195,7 @@ class Weapon(Sprite):
         self.groups = game.all_sprites, game.weapons
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = game.player_img
+        self.image = pg.transform.scale(game.player_img, (64, 64))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
