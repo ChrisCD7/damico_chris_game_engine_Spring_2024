@@ -64,7 +64,10 @@ class Game:
         self.img_folder = path.join(self.game_folder, 'image_files')
         self.snd_folder = path.join(self.game_folder, 'audio_assets')
 
-        self.player_img = pg.image.load(path.join(self.img_folder, 'sword.jpg')).convert_alpha()
+        self.player_img = pg.image.load(path.join(self.img_folder, 'player.png')).convert_alpha()
+        self.weapon_img = pg.image.load(path.join(self.img_folder, 'mantis.png')).convert_alpha()
+        self.mob_img = pg.image.load(path.join(self.img_folder, 'enemy.jpg')).convert_alpha()
+        self.powerup_img = pg.image.load(path.join(self.img_folder, 'maxdoc.jpg')).convert_alpha()
 
 
 
@@ -98,7 +101,7 @@ class Game:
                 if tile == 'M':
                     Mob(self, col, row)
                 if tile == 'W':
-                    Weapon(self, col, row)
+                    Weapon(self, col, row, dir)
 
 
 # defined run method in game engine

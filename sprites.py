@@ -12,14 +12,15 @@ from settings import *
 from random import *
 from PIL import Image
 
+vec = pg.math.Vector2
+
 # write a player class
 class Player(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.player
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
+        self.image = pg.transform.scale(game.player_img, (64, 64))
         self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
@@ -131,31 +132,39 @@ class Mob(Sprite):
     def __init__(self, game, x, y):
         # add powerup groups later....
         self.groups = game.all_sprites, game.mobs
-        Sprite.__init__(self, self.groups)
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        # self.image.fill(RED)
+        self.image = self.game.mob_img
+        self.image = pg.transform.scale(game.mob_img, (64, 64))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.vx, self.vy = 100, 100
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
         self.speed = randint(1,3)
         self.hitpoints = 4
 
     def collide_with_walls(self, dir):
         if dir == 'x':
-            # print('colliding on the x')
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                self.vx *= -1
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
                 self.rect.x = self.x
         if dir == 'y':
-            # print('colliding on the y')
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                self.vy *= -1
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
                 self.rect.y = self.y
 
     def update(self):
@@ -193,8 +202,7 @@ class PowerUp(Sprite):
         self.groups = game.all_sprites, game.power_ups
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
+        self.image = pg.transform.scale(game.powerup_img, (64, 64))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -217,17 +225,19 @@ class Food(Sprite):
 
 # glorified powerup :)
 class Weapon(Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, dir):
         self.groups = game.all_sprites, game.weapons
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.transform.scale(game.player_img, (64, 64))
+        self.image = pg.transform.scale(game.weapon_img, (96, 96))
         self.rect = self.image.get_rect()
+        self.dir = dir
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-    
+        self.pos = vec(x,y)
+        
     # from ccozort sword class
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
