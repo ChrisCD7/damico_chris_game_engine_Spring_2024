@@ -173,8 +173,11 @@ class Mob(Sprite):
         # self.image.blit(self.game.screen, self.pic)
         # pass
         # # self.rect.x += 1
+        # add x collision later
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
+        # self.collide_with_walls('x')
+        # self.collide_with_walls('y')
         
         if self.rect.x < self.game.player.rect.x:
             self.vx = 100
@@ -237,6 +240,7 @@ class Weapon(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         self.pos = vec(x,y)
+        
         
     # from ccozort sword class
     def collide_with_group(self, group, kill):

@@ -31,6 +31,7 @@ Settings Menu
 # player = Player
 speed = PLAYER_SPEED
 
+
 class Game:
     # initialize game window
     def __init__(self):
@@ -68,7 +69,7 @@ class Game:
         self.weapon_img = pg.image.load(path.join(self.img_folder, 'mantis.png')).convert_alpha()
         self.mob_img = pg.image.load(path.join(self.img_folder, 'enemy.jpg')).convert_alpha()
         self.powerup_img = pg.image.load(path.join(self.img_folder, 'maxdoc.jpg')).convert_alpha()
-
+        self.bg_img = pg.image.load(path.join(self.img_folder, 'nightcity.jpg')).convert_alpha()
 
 
     # Modify the 'new' method in the Game class to create Mob instances
@@ -120,6 +121,7 @@ class Game:
             self.update()
             # this output
             self.draw()
+            # health bar
             
 
 
@@ -148,10 +150,28 @@ class Game:
         surface.blit(text_surface, text_rect)
 
     def draw(self):
-        self.screen.fill(BGCOLOR)
+        # Load the background image
+        background = pg.image.load(path.join(self.img_folder, 'nightcity.jpg')).convert_alpha()
+    
+        # Scale the background image to fit the screen
+        background = pg.transform.scale(background, (WIDTH, HEIGHT))
+    
+        # Blit the background image onto the screen
+        self.screen.blit(background, (0, 0))
         self.draw_grid()
         self.all_sprites.draw(self.screen)
         pg.display.flip()
+
+    def draw_health_bar(surf, x, y, pct):
+        if pct < 0:
+            pct = 0
+            BAR_LENGTH = 32
+            BAR_HEIGHT = 10
+            fill = (pct / 100) * BAR_LENGTH
+            outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+            fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
+            pg.draw.rect(surf, GREEN, fill_rect)
+            pg.draw.rect(surf, WHITE, outline_rect, 2)
 
     # player input
     def events(self):
