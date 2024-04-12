@@ -11,9 +11,30 @@ from pygame.sprite import Sprite
 from settings import *
 from random import *
 from PIL import Image
-
+from os import *
 vec = pg.math.Vector2
 
+
+SPRITESHEET = "theBell.png"
+
+# needed for animated sprite
+game_folder = path.dirname(__file__)
+img_folder = path.join(game_folder, 'images')
+
+# needed for animated sprite
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, filename):
+        self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height):
+        # grab an image out of a larger spritesheet
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        # image = pg.transform.scale(image, (width, height))
+        image = pg.transform.scale(image, (width * 1, height * 1))
+        return image
+       
 # write a player class
 class Player(Sprite):
     def __init__(self, game, x, y):
@@ -22,6 +43,14 @@ class Player(Sprite):
         self.game = game
         self.image = pg.transform.scale(game.player_img, (64, 64))
         self.rect = self.image.get_rect()
+        # needed for animated sprite
+        self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
+        # needed for animated sprite
+        self.load_images()
+        # self.image = game.player_img
+        # self.image.fill(GREEN)
+        # needed for animated sprite
+        self.image = self.standing_frames[0]
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
