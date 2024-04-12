@@ -57,6 +57,15 @@ class Player(Sprite):
         self.hitpoints = 50
         self.speed = 300
         self.attack = 30
+        # needed for animated sprite
+        self.current_frame = 0
+        # needed for animated sprite
+        self.last_update = 0
+        self.material = True
+        # needed for animated sprite
+        self.jumping = False
+        # needed for animated sprite
+        self.walking = False
     # def move(self, dx=0, dy=0):
     #     self.x += dx
     #     self.y += dy
@@ -104,6 +113,26 @@ class Player(Sprite):
             if str(hits[0].__class__.__name__) == "Mob":
                 self.hitpoints -= 10
 
+     # needed for animated sprite
+    def load_images(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0, 32, 32), 
+                                self.spritesheet.get_image(32,0, 32, 32)]
+        # for frame in self.standing_frames:
+        #     frame.set_colorkey(BLACK)
+
+      
+        # add other frame sets for different poses etc.
+    # needed for animated sprite        
+    def animate(self):
+        now = pg.time.get_ticks()
+        if now - self.last_update > 350:
+            self.last_update = now
+            self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+            bottom = self.rect.bottom
+            self.image = self.standing_frames[self.current_frame]
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
+
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
@@ -137,6 +166,8 @@ class Player(Sprite):
     def update(self):
         # self.rect.x = self.x * TILESIZE
         # self.rect.y = self.y * TILESIZE
+        # needed for animated sprite
+        self.animate()
         self.get_keys()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
