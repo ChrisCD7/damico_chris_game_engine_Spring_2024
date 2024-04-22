@@ -10,7 +10,7 @@ import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
 from random import *
-from PIL import Image
+# from PIL import Image
 from os import *
 vec = pg.math.Vector2
 
@@ -69,7 +69,10 @@ class Player(Sprite):
     # def move(self, dx=0, dy=0):
     #     self.x += dx
     #     self.y += dy
-        
+    
+    def shoot(self):
+        Projectile(self.game, self.rect.centerx, self.rect.top, 'right')  # Assumes shooting right
+
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
@@ -336,3 +339,24 @@ class Coin(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         
+class Projectile(pg.sprite.Sprite):
+    def __init__(self, game, x, y, dir):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.transform.scale(game.weapon_img, (10, 5))  # Adjust size as needed
+        self.rect = self.image.get_rect()
+        self.rect.centerx = x
+        self.rect.centery = y
+        self.speed = 10  # Speed of the projectile
+        self.dir = dir
+
+    def update(self):
+        # Update the projectile's position; modify if you have different directions
+        if self.dir == 'right':
+            self.rect.x += self.speed
+        elif self.dir == 'left':
+            self.rect.x -= self.speed
+        # Remove the sprite if it leaves the screen
+        if self.rect.right < 0 or self.rect.left > WIDTH:
+            self.kill()

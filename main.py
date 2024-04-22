@@ -15,17 +15,22 @@ from sprites import *
 from os import path
 import os
 from time import *
-from PIL import *
+# from PIL import *
 
+
+print(sys.executable)
 
 '''
 Goals:
-
+Alpha-
 Weapons (add image to sprite) ✅
 Shop
 Scrolling Map
 Music ✅
 Settings Menu
+
+Beta-
+Player Sprite Shoots Projectiles 
 '''
 
 # player = Player
@@ -180,6 +185,9 @@ class Game:
                 if event.type == pg.QUIT:
                     self.quit()
                     print("the game has ended..")
+                elif event.type == pg.KEYDOWN: 
+                    if event.key == pg.K_SPACE:
+                        self.player.shoot()
                 # keyboard events
                 # if event.type == pg.KEYDOWN:
                 #     if event.key == pg.K_LEFT:
