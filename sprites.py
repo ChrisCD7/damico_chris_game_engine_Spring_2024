@@ -363,3 +363,33 @@ class Projectile(pg.sprite.Sprite):
         # Remove the sprite if it leaves the screen
         if self.rect.right < 0 or self.rect.left > WIDTH:
             self.kill()
+
+# integrated from GPT
+class Shop:
+    def __init__(self, game):
+        self.game = game
+        self.screen = game.screen
+        self.font = pg.font.Font(None, 36)
+        self.items = ['Item 1', 'Item 2', 'Item 3']
+        self.selected_item = None
+
+    def draw(self):
+        self.screen.fill(BLACK)
+        for i, item in enumerate(self.items):
+            color = WHITE if i != self.selected_item else RED
+            text = self.font.render(item, True, color)
+            self.screen.blit(text, (100, 100 + i * 50))
+
+    def handle_event(self, event):
+        if event.type == pg.MOUSEBUTTONDOWN:
+            mouse_pos = pg.mouse.get_pos()
+            for i, _ in enumerate(self.items):
+                if 100 <= mouse_pos[0] <= 200 and 100 + i * 50 <= mouse_pos[1] <= 150 + i * 50:
+                    self.selected_item = i
+
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE:
+                self.game.show_main_screen()
+
+        elif event.type == pg.QUIT:
+            self.game.quit()

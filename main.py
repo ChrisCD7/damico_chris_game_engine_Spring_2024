@@ -202,12 +202,19 @@ class Game:
                 #     if event.key == pg.K_DOWN:
                 #         self.player.move(dy=1)
 
-    def show_ss(self):
+    def show_start_s(self):
         pass
 
-    def show_gs():
+    def show_game_s():
         pass
 
+    def show_shop_s(self):
+        # Show the shop screen
+        while True:
+            for event in pg.event.get():
+                self.shop.handle_event(event)
+            self.shop.draw()
+            pg.display.flip()
 
 # instanciating the game class
 g = Game()
