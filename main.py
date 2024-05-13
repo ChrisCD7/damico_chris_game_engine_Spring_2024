@@ -15,7 +15,6 @@ from sprites import *
 from os import path
 import os
 from time import *
-from PIL import *
 
 
 print(sys.executable)
