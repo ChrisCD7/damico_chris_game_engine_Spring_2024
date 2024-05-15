@@ -13,7 +13,6 @@ from random import *
 from settings import *
 from sprites import *
 from os import path
-import os
 from time import *
 
 
@@ -35,6 +34,7 @@ Player Sprite Shoots Projectiles
 # player = Player
 speed = PLAYER_SPEED
 
+level1 = 'map.txt'
 
 class Game:
     # initialize game window
@@ -47,7 +47,6 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.images = {}
         self.audio = {}
-        self.load_data()
 
 
     # def music_player(self):
@@ -57,14 +56,6 @@ class Game:
 
     # load game data
     def load_data(self):
-        game_folder = path.dirname(__file__)
-        self.map_data = []
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
-            for line in f:
-                self.map_data.append(line)
-                print(self.map_data)
-                print(enumerate(self.map_data))
-        # access files from folders
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'image_files')
         self.snd_folder = path.join(self.game_folder, 'audio_assets')
@@ -75,9 +66,18 @@ class Game:
         self.powerup_img = pg.image.load(path.join(self.img_folder, 'maxdoc.jpg')).convert_alpha()
         self.bg_img = pg.image.load(path.join(self.img_folder, 'nightcity.jpg')).convert_alpha()
 
+        with open(path.join(self.game_folder, level1), 'rt') as f:
+            f.read()
+
+        self.map_data = ["1111111"]
+
+        # access files from folders
+  
+
 
     # Modify the 'new' method in the Game class to create Mob instances
     def new(self):
+        self.load_data()
         # init all variables, setup groups, instantiate classes
         pg.mixer.music.load(path.join(self.snd_folder, 'bg_music2.mp3'))
         self.all_sprites = pg.sprite.Group()
@@ -106,7 +106,8 @@ class Game:
                 if tile == 'M':
                     Mob(self, col, row)
                 if tile == 'W':
-                    Weapon(self, col, row, dir)
+                    Weapon(self, col, row, 'dir')  # Assuming 'dir' is a placeholder for the actual direction
+
 
 
 # defined run method in game engine
