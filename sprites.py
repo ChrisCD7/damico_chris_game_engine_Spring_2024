@@ -19,7 +19,7 @@ SPRITESHEET = "theBell.png"
 
 # needed for animated sprite
 game_folder = path.dirname(__file__)
-img_folder = path.join(game_folder, 'images')
+img_folder = path.join(game_folder, 'image_files')
 
 # needed for animated sprite
 class Spritesheet:
@@ -87,9 +87,9 @@ class Player(Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
-        # elif event.type == pg.KEYDOWN: 
-        #             if event.key == pg.K_SPACE:
-        #                 self.player.shoot()
+        # if keys[pg.K_SPACE]:
+        #     self.player.shoot()
+
 
     def collide_with_obj(self, group, kill, desc):
         hits = pg.sprite.spritecollide(self, group, kill)

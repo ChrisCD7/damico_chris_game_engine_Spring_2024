@@ -14,7 +14,7 @@ from settings import *
 from sprites import *
 from os import path
 from time import *
-
+from tile_map import *
 
 print(sys.executable)
 
@@ -45,8 +45,7 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
-        self.images = {}
-        self.audio = {}
+
 
 
     # def music_player(self):
@@ -59,17 +58,13 @@ class Game:
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'image_files')
         self.snd_folder = path.join(self.game_folder, 'audio_assets')
-
+        self.map = Map(path.join(self.game_folder, 'map.txt'))
         self.player_img = pg.image.load(path.join(self.img_folder, 'player.png')).convert_alpha()
         self.weapon_img = pg.image.load(path.join(self.img_folder, 'mantis.png')).convert_alpha()
         self.mob_img = pg.image.load(path.join(self.img_folder, 'enemy.jpg')).convert_alpha()
         self.powerup_img = pg.image.load(path.join(self.img_folder, 'maxdoc.jpg')).convert_alpha()
         self.bg_img = pg.image.load(path.join(self.img_folder, 'nightcity.jpg')).convert_alpha()
 
-        with open(path.join(self.game_folder, level1), 'rt') as f:
-            f.read()
-
-        self.map_data = ["1111111"]
 
         # access files from folders
   
@@ -90,7 +85,7 @@ class Game:
         # self.player = Player(self, 10, 10)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
-        for row, tiles in enumerate(self.map_data):
+        for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 # print(col)
                 # print(tiles)
