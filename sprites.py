@@ -12,6 +12,7 @@ from settings import *
 from random import *
 # from PIL import Image
 from os import *
+import sys
 vec = pg.math.Vector2
 
 
@@ -242,6 +243,8 @@ class Mob(Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y
+        if str(hits[0].__class__.__name__) == "Store":
+                    self.game.open_store()
 
     def update(self):
         if self.hitpoints < 1:
@@ -393,3 +396,193 @@ class Shop:
 
         elif event.type == pg.QUIT:
             self.game.quit()
+# some store code from https://github.com/cgxysqiubdW708/che_james_game_engine_spring_2024/blob/main/main.py
+alreadycamo = False
+
+class Store:
+    def __init__(self, game,x,y):
+        self.game = game
+        self.GAME_WINDOW_WIDTH, self.GAME_WINDOW_HEIGHT = game.screen.get_size()
+        self.warning_box_visible = False
+
+        # # Player stats
+        # self.player_health = game.player1.hitpoints
+        # self.player_attack = game.player1.hitpoints
+        # self.player_coins = game.player1.moneybagS
+
+    def set_player_health(self, new_health):
+        self.player_health = new_health
+        self.game.player1.hitpoints = new_health
+
+    def set_player_attack(self, new_attack):
+        self.player_attack = new_attack
+        self.game.player1.attack = new_attack
+
+    def has_enough_coins_for_any_powerup(self):
+        for powerup in self.powerups:
+            if self.player_coins >= powerup["cost"]:
+                return True
+        return False
+
+    def draw_warning_box(self, text):
+        if not self.warning_box_visible:
+            return
+
+        warning_box_width = 300
+        warning_box_height = 100
+        warning_box_x = (self.GAME_WINDOW_WIDTH - warning_box_width) // 2
+        warning_box_y = (self.GAME_WINDOW_HEIGHT - warning_box_height) // 2
+
+        pg.draw.rect(self.game.screen, (128, 128, 128), (warning_box_x, warning_box_y, warning_box_width, warning_box_height))
+
+        font = pg.font.Font(None, 36)
+        text_render = font.render(text, True, (255, 255, 255))
+        text_rect = text_render.get_rect(center=(warning_box_x + warning_box_width // 2, warning_box_y + warning_box_height // 2))
+        self.game.screen.blit(text_render, text_rect)
+
+    def open(self):
+        global alreadycamo, mobcamo
+        # Store UI box dimensions and position
+        box_width = 500
+        box_height = 400
+        box_x = (self.GAME_WINDOW_WIDTH - box_width) // 2
+        box_y = (self.GAME_WINDOW_HEIGHT - box_height) // 2
+
+        # Store UI
+        store_open = True
+        while store_open:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    store_open = False
+                    pg.quit()
+                    sys.exit()
+                elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        store_open = False
+                        self.warning_box_visible = False  # Close the warning box
+                elif event.type == pg.MOUSEBUTTONDOWN:
+                    pos = event.pos
+                    self.handle_buy_button_click(pos)
+                    store_open = self.handle_exit_button_click(pos)
+
+                    # Check if the warning box was clicked
+                    warning_box_width = 300
+                    warning_box_height = 100
+                    warning_box_x = (self.GAME_WINDOW_WIDTH - warning_box_width) // 2
+                    warning_box_y = (self.GAME_WINDOW_HEIGHT - warning_box_height) // 2
+                    warning_box_rect = pg.Rect(warning_box_x, warning_box_y, warning_box_width, warning_box_height)
+                    if warning_box_rect.collidepoint(pos):
+                        self.warning_box_visible = False  # Close the warning box
+
+            # Clear the game window
+            self.game.screen.fill((0, 0, 0))
+
+            # Set mobcamo to true to fix bug where mobs despawn when store is closed
+            if mobcamo == True:
+                alreadycamo = True
+
+            if mobcamo == False:
+                alreadycamo = False
+                mobcamo = True
+                print("no mobcamo")
+
+            # Draw the store UI box
+            pg.draw.rect(self.game.screen, (128, 128, 128), (box_x, box_y, box_width, box_height))
+
+            # Render player stats
+            font = pg.font.Font(None, 36)
+            stats_text = font.render(f"Health: {self.player_health} | Attack: {self.player_attack} | Coins: {self.player_coins}", True, (255, 255, 255))
+            self.game.screen.blit(stats_text, (box_x + 10, box_y + 10))
+
+            # Render powerup options and buy buttons
+            y = box_y + 60
+            for i, powerup in enumerate(self.powerups):
+                powerup_text = font.render(f"{i + 1}. {powerup['name']} - Cost: {powerup['cost']}", True, (255, 255, 255))
+                self.game.screen.blit(powerup_text, (box_x + 10, y))
+
+                # Draw the buy button
+                buy_button_width = 100
+                buy_button_height = 30
+                buy_button_x = box_x + box_width - buy_button_width - 20
+                buy_button_y = y  # Adjusted vertical position to avoid overlap
+                pg.draw.rect(self.game.screen, (0, 255, 0), (buy_button_x, buy_button_y, buy_button_width, buy_button_height))
+                buy_button_text = font.render("Buy", True, (0, 0, 0))
+                buy_button_text_rect = buy_button_text.get_rect(center=(buy_button_x + buy_button_width // 2, buy_button_y + buy_button_height // 2))
+                self.game.screen.blit(buy_button_text, buy_button_text_rect)
+
+                y += 60  # Increased vertical spacing between powerup options
+
+            # Draw the exit button
+            exit_button_width = 100
+            exit_button_height = 30
+            exit_button_x = box_x + (box_width - exit_button_width) // 2
+            exit_button_y = box_y + box_height - exit_button_height - 20
+            pg.draw.rect(self.game.screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))
+            exit_button_text = font.render("Exit", True, (0, 0, 0))
+            exit_button_text_rect = exit_button_text.get_rect(center=(exit_button_x + exit_button_width // 2, exit_button_y + exit_button_height // 2))
+            self.game.screen.blit(exit_button_text, exit_button_text_rect)
+
+            # Draw the warning box if the player doesn't have enough coins for any powerup
+            if not self.has_enough_coins_for_any_powerup() and self.warning_box_visible:
+                self.draw_warning_box("Not enough coins")
+
+            pg.display.flip()
+
+    def handle_buy_button_click(self, pos):
+        box_width = 500
+        box_height = 400
+        box_x = (self.GAME_WINDOW_WIDTH - box_width) // 2
+        box_y = (self.GAME_WINDOW_HEIGHT - box_height) // 2
+
+        y = box_y + 60
+        for i, powerup in enumerate(self.powerups):
+            buy_button_width = 100
+            buy_button_height = 30
+            buy_button_x = box_x + box_width - buy_button_width - 20
+            buy_button_y = y  # Adjusted vertical position to match the button position in open
+            buy_button_rect = pg.Rect(buy_button_x, buy_button_y, buy_button_width, buy_button_height)
+            if buy_button_rect.collidepoint(pos):
+                if self.player_coins >= powerup["cost"]:
+                    self.player_coins -= powerup["cost"]
+                    if powerup["name"] == "Health Potion":
+                        powerup["effect"](self.player_health + 1)
+                    elif powerup["name"] == "Attack Boost":
+                        powerup["effect"](self.player_attack + 5)
+                    else:
+                        powerup["effect"]()  # Call the effect function as-is for other powerups
+                    print(f"Purchased {powerup['name']}")
+                else:
+                    print("Not enough coins")
+                    self.warning_box_visible = True  # Show the warning box
+                    self.draw_warning_box("Not enough coins")  # Draw the warning box
+
+            y += 60  # Increased vertical spacing between powerup options
+
+    def handle_exit_button_click(self, pos):
+        global mobcamo
+        box_width = 500
+        box_height = 400
+        box_x = (self.GAME_WINDOW_WIDTH - box_width) // 2
+        box_y = (self.GAME_WINDOW_HEIGHT - box_height) // 2
+
+        exit_button_width = 100
+        exit_button_height = 30
+        exit_button_x = box_x + (box_width - exit_button_width) // 2
+        exit_button_y = box_y + box_height - exit_button_height - 20
+        exit_button_rect = pg.Rect(exit_button_x, exit_button_y, exit_button_width, exit_button_height)
+
+        if alreadycamo == True:
+            pass
+        elif alreadycamo == False:
+            mobcamo = False
+
+        if exit_button_rect.collidepoint(pos):
+            self.game.player1.reset_position_after_store()  # Call the new method to reset player position
+            return False  # Exit the store
+        else:
+            return True  # Stay in the store
+        
+    # def reset_position_after_store(self):
+    #     # Move the player down by 2 tiles
+    #     self.y = currenty + 2 * TILESIZE
+    #     self.rect.y = self.y

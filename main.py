@@ -16,6 +16,7 @@ from os import path
 from time import *
 from tile_map import *
 
+
 print(sys.executable)
 
 '''
@@ -82,6 +83,7 @@ class Game:
         self.mobs = pg.sprite.Group()
         self.player = pg.sprite.Group()
         self.weapons = pg.sprite.Group()
+        self.store = pg.sprite.Group()
         # self.player = Player(self, 10, 10)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -102,7 +104,8 @@ class Game:
                     Mob(self, col, row)
                 if tile == 'W':
                     Weapon(self, col, row, 'dir')  # Assuming 'dir' is a placeholder for the actual direction
-
+                if tile =='S':
+                    Store(self, col, row)
 
 
 # defined run method in game engine
@@ -196,6 +199,10 @@ class Game:
                 # if event.type == pg.KEYDOWN:
                 #     if event.key == pg.K_DOWN:
                 #         self.player.move(dy=1)
+    def open_store(self):
+        store = Store(self)
+        store.open()
+        print("Store opened")
 
     def show_start_s(self):
         pass
